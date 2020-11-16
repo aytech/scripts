@@ -23,8 +23,18 @@ IF "%1"=="" (
 GOTO :INFO
 
 :LOGIN
-vboxmanage showvminfo "Ubuntu Focal Fossa" | findstr /r /c:"State:[ ]*running" > tmp.txt
-SET /p state= < tmp.txt
+IF "%2"=="" GOTO :INFO
+vboxmanage list vms | findstr /r /c:"\"%2\"" > tmp.txt
+SET /p vm = < tmp.txt
+IF %ERRORLEVEL% == 0 (
+	GOTO :RUN_AND_LOGIN
+) ELSE (
+	ECHO VM with name "%2" not found, please select form the list:
+	GOTO :LIST
+
+:RUN_AND_LOGIN
+vboxmanage showvminfo "%2" | findstr /r /c:"State:[ ]*running" > tmp.txt
+SET /p state = < tmp.txt
 IF %ERRORLEVEL% == 0 (
 	ECHO Machine already running, logging in...
 	DEL tmp.txt
@@ -36,7 +46,7 @@ IF %ERRORLEVEL% == 0 (
 )
 
 :START
-vboxmanage startvm "Ubuntu Focal Fossa" --type headless
+vboxmanage startvm "%2" --type headless
 ECHO Waiting for machine to boot
 timeout /t 30 /nobreak
 GOTO :SSH
@@ -50,11 +60,13 @@ ssh oleg@127.0.0.1
 GOTO :EOF
 
 :STOP
-vboxmanage controlvm "Ubuntu Focal Fossa" poweroff
+REM vboxmanage controlvm "Ubuntu Focal Fossa" poweroff
+ECHO Not implemented
 GOTO :EOF
 
 :STATUS
-vboxmanage showvminfo "Ubuntu Focal Fossa" | findstr State
+REM vboxmanage showvminfo "Ubuntu Focal Fossa" | findstr State
+ECHO Not implemented
 GOTO :EOF
 
 :LIST
@@ -62,5 +74,5 @@ vboxmanage list vms
 GOTO :EOF
 
 :INFO
-ECHO Provide argument ("login", "stop", "status" or "list")
+ECHO Provide argument ("login <name of VM>", "stop", "status" or "list")
 GOTO :EOF
