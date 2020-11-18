@@ -19,15 +19,15 @@ IF "%1"=="stop" (
 )
 
 IF "%1"=="status" (
-	GOTO :STATUS
+	CALL :STATUS %2
 )
 
 IF "%1"=="list" (
-	GOTO :LIST
+	CALL :LIST
 )
 
 IF "%1"=="" (
-	GOTO :INFO
+	CALL :INFO
 )
 
 GOTO :EOF
@@ -58,16 +58,15 @@ IF %ERRORLEVEL% == 0 (
 	CALL :SSH
 ) ELSE (
 	ECHO Machine not running, starting...
-	REM CALL :START %1 %2
+	CALL :START
 )
-DEL tmp.txt
 GOTO :EOF
 
 :START
-vboxmanage startvm "%1" --type headless
+vboxmanage startvm "%VM%" --type headless
 ECHO Waiting for machine to boot
 timeout /t 30 /nobreak
-CALL :SSH %2
+CALL :SSH
 GOTO :EOF
 
 :SSH 
@@ -78,12 +77,28 @@ GOTO :EOF
 IF NOT "%1" == "" (
 	SET VM=%1
 )
-vboxmanage controlvm "%VM%" poweroff
+vboxmanage list vms | findstr /r /c:"%VM%" > tmp.txt
+SET /p vm = < tmp.txt
+IF %ERRORLEVEL% == 0 (
+	vboxmanage controlvm "%VM%" poweroff
+) ELSE (
+	ECHO Machine is not found, please select from the list:
+	CALL :LIST
+)
 GOTO :EOF
 
 :STATUS
-REM vboxmanage showvminfo "Ubuntu Focal Fossa" | findstr State
-ECHO Not implemented
+IF NOT "%1" == "" (
+	SET VM=%1
+)
+vboxmanage list vms | findstr /r /c:"%VM%" > tmp.txt
+SET /p vm = < tmp.txt
+IF %ERRORLEVEL% == 0 (
+	vboxmanage showvminfo "%VM%" | findstr State
+) ELSE (
+	ECHO Machine is not found, please select from the list:
+	CALL :LIST
+)
 GOTO :EOF
 
 :LIST
