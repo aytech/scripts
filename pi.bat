@@ -1,7 +1,8 @@
 @echo off
 
-SET ssh_key=C:\Users\oyapparov\.ssh\pi_rsa
+SET ssh_key=pi_rsa
 SET ssh_address=pi@192.168.0.26
+SET ssh_port=22
 
 IF "%1"=="login" (
 	GOTO :LOGIN
@@ -14,7 +15,7 @@ IF "%1"=="" (
 GOTO :EOF
 
 :LOGIN
-ssh -i %ssh_key% %ssh_address%
+ssh -i %userprofile%\.ssh\%ssh_key% %ssh_address% -p %ssh_port%
 GOTO :EOF
 
 :INFO

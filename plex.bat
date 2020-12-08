@@ -1,7 +1,8 @@
 @echo off
 
-SET ssh_key=C:\Users\oyapparov\.ssh\plex_rsa
+SET ssh_key=plex_rsa
 SET ssh_address=oleg@192.168.0.10
+SET ssh_port=22
 SET plex_download_path=/home/oleg/Downloads
 
 IF "%1"=="copy" (
@@ -23,7 +24,7 @@ scp -i %ssh_key% "%2" %ssh_address%:%plex_download_path%
 GOTO :EOF
 
 :LOGIN
-ssh -i %ssh_key% %ssh_address%
+ssh -i %userprofile%\.ssh\%ssh_key% %ssh_address% -p %ssh_port%
 GOTO :EOF
 
 :INFO

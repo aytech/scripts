@@ -1,6 +1,9 @@
 #!/bin/bash
 
-for d in $(find /var/lib/transmission-daemon/downloads -maxdepth 1 -type d)
-do
-	echo $d
+for d in /home/oleg/Downloads/*; do
+  if [ -d "$d" ]; then
+    for s in "$d/*"; do
+      echo $s
+    done
+  fi
 done
