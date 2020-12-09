@@ -8,7 +8,7 @@ REM 	- ubuntu login Server 2222
 REM 3. Copy the public key to the server: ssh-copy-id -i ubuntu_rsa.pub -p 2222 oleg@127.0.01
 
 SET /A port=22
-SET VM=Ubuntu Focal Fossa
+SET VM=Server
 
 IF "%1"=="login" (
 	CALL :LOGIN %2 %3
