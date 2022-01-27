@@ -1,7 +1,8 @@
 @echo off
 
 SET ssh_key=plex_rsa
-SET ssh_address=oleg@192.168.0.10
+SET ssh_address=oleg@192.168.1.11
+REM SET ssh_address=oleg@192.168.0.10
 SET ssh_port=22
 SET plex_download_path=/home/oleg/Downloads
 
